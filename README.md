@@ -1,6 +1,5 @@
 # codev-onboarding-portal-be
 
 Run "npm run dev"
-Port: 5000
 
-
+Running on Port: 5000
