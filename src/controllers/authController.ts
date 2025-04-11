@@ -75,10 +75,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const registerClientFacing = async (
+export const registerNewHire = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   const result = register(req, res);
+  // TODO new hire email service here 
   console.log(result, "result");
 };
