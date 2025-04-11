@@ -2,17 +2,17 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/authModel";
+import { UserRole } from "../interfaces/userInterface";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  console.log("register", req.body);
-
-  // res.status(201).json({ msg: "Registration succesful" });
   try {
     const {
       name,
       email,
       password,
-    }: { name: string; email: string; password: string } = req.body;
+      role,
+    }: { name: string; email: string; password: string; role: UserRole } =
+      req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const user = new User({ name, email, password });
+    const user = new User({ name, email, password, role });
     await user.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -34,6 +34,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password }: { email: string; password: string } = req.body;
 
     const user = await User.findOne({ email });
+    console.log(user);
+
     if (!user) {
       res.status(400).json({ message: "Invalid credentials" });
       return;
@@ -45,13 +47,38 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "1h",
+      }
+    );
 
-    res.json({ token });
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+    });
   } catch (err: unknown) {
     const error = err instanceof Error ? err.message : "Unknown error";
     res.status(500).json({ message: error });
   }
+};
+
+export const registerClientFacing = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const result = register(req, res);
+  console.log(result, "result");
 };
