@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/authModel";
@@ -54,4 +54,41 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const error = err instanceof Error ? err.message : "Unknown error";
     res.status(500).json({ message: error });
   }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, currentPassword, newPassword, confirmPassword } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(400).json({ message: "Email does not exist." });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      res.status(400).json({ message: "Password incorrect." });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      res.status(400).json({ message: "Passwords do not match." });
+      return;
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : "Unknown error";
+    res.status(500).json({ message: error });
+  }
+  next();
 };
