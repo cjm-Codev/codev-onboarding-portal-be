@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { initSystemAdmin } from '../utils/initAdmin';
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const connectDB = async (): Promise<void> => {
     } as mongoose.ConnectOptions);
 
     console.log('MongoDB Connected');
+    await initSystemAdmin();
   } catch (error) {
     console.error('MongoDB connection error:', error);
     process.exit(1);
