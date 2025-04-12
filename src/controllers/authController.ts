@@ -2,34 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/authModel";
+import { UserRole } from "../interfaces/userInterface";
 import { welcomeEmail } from "../mailer/newHire";
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Register a new user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       201:
- *         description: User registered successfully
- *       400:
- *         description: User already exists
- *       500:
- *         description: Server error
- */ import { UserRole } from "../interfaces/userInterface";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -57,31 +31,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 		res.status(500).json({ message: err.message || "Server error" });
 	}
 };
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Log in a user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- *       400:
- *         description: Invalid credentials
- *       500:
- *         description: Server error
- */
+
 export const login = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { email, password }: { email: string; password: string } = req.body;
@@ -127,35 +77,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 		res.status(500).json({ message: error });
 	}
 };
-/**
- * @swagger
- * /api/auth/reset-password:
- *   post:
- *     summary: Reset a user's password
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               currentPassword:
- *                 type: string
- *               newPassword:
- *                 type: string
- *               confirmPassword:
- *                 type: string
- *     responses:
- *       200:
- *         description: Password reset successful
- *       400:
- *         description: Invalid input or password mismatch
- *       500:
- *         description: Server error
- */
+
 export const resetPassword = async (
 	req: Request,
 	res: Response,
@@ -192,35 +114,7 @@ export const resetPassword = async (
 	}
 	next();
 };
-/**
- * @swagger
- * /api/auth/register-new-hire:
- *   post:
- *     summary: Register a new hire
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               role:
- *                 type: string
- *     responses:
- *       201:
- *         description: New hire registered successfully
- *       400:
- *         description: User already exists
- *       500:
- *         description: Server error
- */
+
 export const registerNewHire = async (
 	req: Request,
 	res: Response
