@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/authModel";
+import { welcomeEmail } from "../mailer/newHire";
 /**
  * @swagger
  * /api/auth/register:
@@ -48,6 +49,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 		const user = new User({ name, email, password, role });
 		await user.save();
+
+		welcomeEmail(email, name);
 
 		res.status(201).json({ message: "User registered successfully" });
 	} catch (err: any) {
