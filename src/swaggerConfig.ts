@@ -14,7 +14,7 @@ const swaggerOptions: Options = {
       },
     ],
   },
-  apis: ["./src/controllers/*.ts"], // Path to your controllers
+  apis: ["./src/swaggerDefinitions/*.ts"],
 };
 
 export default swaggerOptions;
