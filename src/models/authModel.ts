@@ -9,8 +9,9 @@ const UserSchema: Schema<IUser> = new Schema({
 	role: {
 		type: String,
 		enum: Object.values(UserRole),
-		default: UserRole.ClientFacing,
+		default: UserRole.Employee,
 	},
+    enabled: { type: Boolean, default: true },
 	firstTimeLogin: { type: Boolean, default: true },
 	createdAt: { type: Date, default: Date.now },
 });

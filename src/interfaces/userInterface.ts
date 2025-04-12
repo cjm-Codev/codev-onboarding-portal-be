@@ -3,13 +3,14 @@ export interface IUser extends Document {
     email: string;
     password: string;
     role: UserRole;
+    enabled: boolean;
     firstTimeLogin: boolean;
     createdAt: Date;
   }
 
 
   export enum UserRole {
-    ClientFacing = 'Client Facing',
+    Employee = 'Employee',
     HR = 'HR',
     IT = 'IT',
     Manager = 'Manager',
