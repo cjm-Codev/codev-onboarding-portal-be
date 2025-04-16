@@ -2,28 +2,46 @@
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Register a new user
+ *     summary: Register a new user (System Admin only)
  *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []  # 🔐 Requires Bearer token
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *               - role
  *             properties:
  *               name:
  *                 type: string
+ *                 example: John Doe
  *               email:
  *                 type: string
+ *                 example: hr1@example.com
  *               password:
  *                 type: string
+ *                 example: password123
+ *               role:
+ *                 type: string
+ *                 enum: [HR, IT, MANAGER, ADMIN]
+ *                 example: HR
  *     responses:
  *       201:
  *         description: User registered successfully
  *       400:
- *         description: User already exists
+ *         description: User already exists or invalid input
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       403:
+ *         description: Forbidden (not a System Admin)
  *       500:
- *         description: Server error
+ *         description: Internal server error
  */
 
 /**
