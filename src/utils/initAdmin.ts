@@ -2,15 +2,15 @@ import { UserRole } from '../interfaces/userInterface';
 import User  from '../models/authModel';
 
 export const initSystemAdmin = async (): Promise<void> => {
-  const email = 'systemadmin@email.com';
+  const email = process.env.SYSTEM_ADMIN_EMAIL;
 
   const existing = await User.findOne({ email });
 
   if (!existing) {
     await User.create({
-      name: 'System Admin',
+      name: process.env.SYSTEM_ADMIN_NAME,
       email,
-      password: 'password123',
+      password: process.env.SYSTEM_ADMIN_PASSWORD,
       role: UserRole.SystemAdmin,
     });
     console.log('System Admin created');
