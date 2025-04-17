@@ -15,4 +15,5 @@ const TaskSchema = new Schema<ITask>({
     createdAt: { type: Date, default: Date.now }
   });
   
-  export const TaskModel = mongoose.model<ITask>('Task', TaskSchema);
+  export const TaskModel = mongoose.model("Task", TaskSchema);
+  export { TaskSchema };
