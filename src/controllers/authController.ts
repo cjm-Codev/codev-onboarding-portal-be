@@ -56,9 +56,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 				createdAt: user.createdAt,
 			},
 			process.env.JWT_SECRET as string,
-			{
-				expiresIn: "1h",
-			}
+			// Removed for development
+			// {
+			// 	expiresIn: "1h",
+			// }
 		);
 
 		res.json({
