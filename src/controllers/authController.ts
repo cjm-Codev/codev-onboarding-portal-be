@@ -123,3 +123,10 @@ export const registerNewHire = async (
 	// welcomeEmail(email, name);
 	console.log(result, "result");
 };
+
+export const adminUserManagement = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	const result = register(req, res);
+};
