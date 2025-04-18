@@ -2,21 +2,32 @@ import { Request, Response } from "express";
 import User from "../models/authModel";
 import { UserRole } from "../interfaces/userInterface";
 
-export const passwordGenerate = () => {
+export const passwordGenerate = (): string => {
 	const length = 12;
 	const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	const lowercase = "abcdefghijklmnopqrstuvwxyz";
 	const numbers = "0123456789";
 	const symbols = "!@#$%^&*()_+-=[]{}|;:',.<>/?";
 
+	const getRandom = (str: string) =>
+		str.charAt(Math.floor(Math.random() * str.length));
+
+	let password = [
+		getRandom(uppercase),
+		getRandom(lowercase),
+		getRandom(numbers),
+		getRandom(symbols),
+	];
+
 	const allChars = uppercase + lowercase + numbers + symbols;
 
-	let password = "";
-	for (let i = 0; i < length; i++) {
-		password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+	for (let i = password.length; i < length; i++) {
+		password.push(getRandom(allChars));
 	}
 
-	return password;
+	const shuffled = password.sort(() => Math.random() - 0.5).join("");
+
+	return shuffled;
 };
 
 export const createUser = async (
@@ -35,16 +46,15 @@ export const createUser = async (
 
 		const existingUser = await User.findOne({ email });
 		if (existingUser) {
-			res.status(400).json({ message: "User already exists" });
-			return;
+			return { success: false, message: "User already exists" };
 		}
 
 		const newUser = new User({ name, email, password, role });
 		const savedUser = await newUser.save();
 
-		return savedUser.toJSON();
+		return { success: true, user: savedUser.toJSON() };
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Unknown error";
-		res.status(500).json({ message: error });
+		return { success: false, message: error };
 	}
 };

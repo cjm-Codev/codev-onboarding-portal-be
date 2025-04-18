@@ -40,7 +40,7 @@ router.post(
 );
 
 router.put(
-	"/admin-user-update",
+	"/admin-user-update/:userId",
 	authenticate,
 	authorizeRoles(UserRole.HR),
 	adminUserUpdate

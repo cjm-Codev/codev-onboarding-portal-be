@@ -2,13 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/authModel";
-import { UserRole } from "../interfaces/userInterface";
 import { welcomeEmail } from "../mailer/newHire";
 import { createUser, passwordGenerate } from "../utils/authUtils";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
 	try {
-		await createUser(req, res, req.body);
+		const result: any = await createUser(req, res, req.body);
+		if (!result.success) {
+			res.status(400).json({ message: result.message });
+			return;
+		}
 		res.status(201).json({ message: "User registered successfully" });
 	} catch (err: any) {
 		res.status(500).json({ message: err.message || "Server error" });
@@ -103,7 +106,11 @@ export const registerNewHire = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
-	const result = createUser(req, res, req.body);
+	const result: any = createUser(req, res, req.body);
+	if (!result.success) {
+		res.status(400).json({ message: result.message });
+		return;
+	}
 	// TODO new hire email service here
 
 	// welcomeEmail(email, name);
@@ -114,13 +121,24 @@ export const adminUserCreate = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
-	const password = passwordGenerate();
+	try {
+		const password = passwordGenerate();
 
-	const userData: any = { ...req.body, password };
-	const result: any = createUser(req, res, userData);
+		const userData: any = { ...req.body, password };
 
-	welcomeEmail(result?.email, result?.name);
-	res.status(200).json({ message: "New User Succesfully created" });
+		const result: any = await createUser(req, res, userData);
+
+		if (!result.success) {
+			res.status(400).json({ message: result.message });
+			return;
+		}
+
+		await welcomeEmail(result?.user?.email, result?.user?.name);
+		res.status(200).json({ message: "New User Succesfully created" });
+	} catch (err) {
+		const error = err instanceof Error ? err.message : "Unknown error";
+		res.status(500).json({ message: error });
+	}
 };
 
 export const adminUserUpdate = async (
