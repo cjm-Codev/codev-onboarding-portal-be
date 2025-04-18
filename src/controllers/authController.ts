@@ -4,26 +4,11 @@ import jwt from "jsonwebtoken";
 import User from "../models/authModel";
 import { UserRole } from "../interfaces/userInterface";
 import { welcomeEmail } from "../mailer/newHire";
+import { createUser, passwordGenerate } from "../utils/authUtils";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const {
-			name,
-			email,
-			password,
-			role,
-		}: { name: string; email: string; password: string; role: UserRole } =
-			req.body;
-
-		const existingUser = await User.findOne({ email });
-		if (existingUser) {
-			res.status(400).json({ message: "User already exists" });
-			return;
-		}
-
-		const user = new User({ name, email, password, role });
-		await user.save();
-
+		await createUser(req, res, req.body);
 		res.status(201).json({ message: "User registered successfully" });
 	} catch (err: any) {
 		res.status(500).json({ message: err.message || "Server error" });
@@ -55,7 +40,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 				role: user.role,
 				createdAt: user.createdAt,
 			},
-			process.env.JWT_SECRET as string,
+			process.env.JWT_SECRET as string
 			// Removed for development
 			// {
 			// 	expiresIn: "1h",
@@ -118,16 +103,47 @@ export const registerNewHire = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
-	const result = register(req, res);
+	const result = createUser(req, res, req.body);
 	// TODO new hire email service here
 
 	// welcomeEmail(email, name);
 	console.log(result, "result");
 };
 
-export const adminUserManagement = async (
+export const adminUserCreate = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
-	const result = register(req, res);
+	const password = passwordGenerate();
+
+	const userData: any = { ...req.body, password };
+	const result: any = createUser(req, res, userData);
+
+	welcomeEmail(result?.email, result?.name);
+	res.status(200).json({ message: "New User Succesfully created" });
+};
+
+export const adminUserUpdate = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const userId: string = req.params?.userId || "";
+
+		const user = await User.findById(userId);
+
+		if (!user) {
+			res.status(404).json({ message: "User not found" });
+			return;
+		}
+
+		Object.assign(user, req.body);
+
+		await user.save();
+
+		res.status(200).json({ message: "User successfully updated", user });
+	} catch (err) {
+		const error = err instanceof Error ? err.message : "Unknown error";
+		res.status(500).json({ message: error });
+	}
 };
