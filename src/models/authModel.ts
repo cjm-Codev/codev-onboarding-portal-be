@@ -24,7 +24,6 @@ const UserSchema: Schema<IUser> = new Schema({
 	},
 	enabled: { type: Boolean, default: true },
 	firstTimeLogin: { type: Boolean, default: true },
-	status: { type: String, enum: ["active", "disabled"], default: "active" },
 	createdAt: { type: Date, default: Date.now },
 });
 
