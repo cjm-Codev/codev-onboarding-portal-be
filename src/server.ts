@@ -17,7 +17,6 @@ dotenv.config();
 connectDB();
 
 app.use("/api", routes);
-app.use("/api/new-hires", newHireRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
