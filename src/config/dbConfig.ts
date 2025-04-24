@@ -1,22 +1,25 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import { initSystemAdmin } from '../utils/initAdmin';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { initSystemAdmin } from "../utils/initAdmin";
 
 dotenv.config();
 
 const connectDB = async (): Promise<void> => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI as string, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as mongoose.ConnectOptions);
+	try {
+		await mongoose.connect(
+			process.env.MONGODB_URI as string,
+			{
+				useNewUrlParser: true,
+				useUnifiedTopology: true,
+			} as mongoose.ConnectOptions
+		);
 
-    console.log('MongoDB Connected');
-    await initSystemAdmin();
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
-  }
+		console.log("MongoDB Connected");
+		await initSystemAdmin();
+	} catch (error) {
+		console.error("MongoDB connection error:", error);
+		process.exit(1);
+	}
 };
 
 export default connectDB;
