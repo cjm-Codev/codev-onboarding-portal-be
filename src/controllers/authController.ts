@@ -5,6 +5,14 @@ import User from "../models/authModel";
 import { welcomeEmail } from "../mailer/newHire";
 import { createUser, passwordGenerate } from "../utils/authUtils";
 
+export const validateToken = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	const user = req.user;
+	res.json({ user: user, message: "Token Valid" });
+};
+
 export const register = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const result: any = await createUser(req, res, req.body);

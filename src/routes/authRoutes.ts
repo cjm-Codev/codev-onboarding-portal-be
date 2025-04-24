@@ -6,6 +6,7 @@ import {
 	registerNewHire,
 	adminUserCreate,
 	adminUserUpdate,
+	validateToken,
 } from "../controllers/authController";
 import { UserRole } from "../interfaces/userInterface";
 import { authorizeRoles } from "../middleware/authorizeRoles";
@@ -45,5 +46,7 @@ router.put(
 	authorizeRoles(UserRole.HR),
 	adminUserUpdate
 );
+
+router.get("/validateToken", authenticate, validateToken);
 
 export default router;
