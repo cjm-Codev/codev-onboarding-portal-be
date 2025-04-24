@@ -13,6 +13,8 @@ import { authorizeRoles } from "../middleware/authorizeRoles";
 import { verifyToken } from "../middleware/verifyToken";
 import { verifyEnabled } from "../middleware/verifyEnabled";
 import { authenticate } from "../middleware/authenticate";
+import { createNewHire } from "../controllers/newHireController";
+import { createTasksInRegister } from "../controllers/taskController";
 
 const router = Router();
 
@@ -25,9 +27,11 @@ router.post(
 
 router.post(
 	"/register-new-hire",
-	verifyToken,
-	authorizeRoles(UserRole.HR),
-	registerNewHire
+	// verifyToken,
+	// authorizeRoles(UserRole.HR),
+	registerNewHire,
+	createTasksInRegister,
+	createNewHire
 );
 
 router.post("/login", verifyEnabled, login);
