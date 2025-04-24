@@ -2,8 +2,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { initSystemAdmin } from "../utils/initAdmin";
 
-dotenv.config();
-
 const connectDB = async (): Promise<void> => {
 	try {
 		await mongoose.connect(
